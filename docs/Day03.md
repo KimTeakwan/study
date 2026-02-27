@@ -131,3 +131,5 @@ content = <Article title = "Welcom" body="Hello, Read"></Article>
 
 ![](images/2026-02-27-15-55-13.png)  
 *🔼 onChangeMode에서 setId를 이용해 id 값 설정*  
+이제 Nav 컴포넌트에 있는 목록을 클릭하면 setId에 의해 id 값이 바뀌고, 컴포넌트가 새로 실행되면서 새로운 id 값이 지정됩니다. 그러면 그 id 값으로 우리가 무얼 하면 될까요? topics에 있는 값 중에서 우리가 선택한 id와 일치하는 원소를 찾아서 제목과 본문으로 설정하면 되겠죠?  
+먼저 반복문을 반복하기에 앞서 title과 body의 값을 초기화합니다.
