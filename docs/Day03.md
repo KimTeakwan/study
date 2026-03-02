@@ -132,4 +132,65 @@ content = <Article title = "Welcom" body="Hello, Read"></Article>
 ![](images/2026-02-27-15-55-13.png)  
 *🔼 onChangeMode에서 setId를 이용해 id 값 설정*  
 이제 Nav 컴포넌트에 있는 목록을 클릭하면 setId에 의해 id 값이 바뀌고, 컴포넌트가 새로 실행되면서 새로운 id 값이 지정됩니다. 그러면 그 id 값으로 우리가 무얼 하면 될까요? topics에 있는 값 중에서 우리가 선택한 id와 일치하는 원소를 찾아서 제목과 본문으로 설정하면 되겠죠?  
-먼저 반복문을 반복하기에 앞서 title과 body의 값을 초기화합니다.
+먼저 반복문을 반복하기에 앞서 title과 body의 값을 초기화합니다.  
+
+```
+let title, body =null;
+```
+그 다음 반복문을 이용해서 id state와 일치하는 topics의 원소를 찾겠습니다. 다음곽 ㅏㅌ이 코드를 구성하면 topics 원소의 숫자만큼 반복될 것입니다.
+```
+for(let i=0; i<topics.length; i++) {
+
+
+}
+```
+topics[i]의 id와 id가 일치하면 title과 body의 값을 설정합니다.  
+```
+if(topics[i].id == id) {
+    title=topics[i].title;
+    body=topics[i].body;
+}
+```
+마지막으로 content에서 title과 body의 값을 {title}, {body}로 설정합니다.
+```
+content=<Article title={title} body={body}></Article>
+```
+지금까지 설명한 코드를 종합해보면 다음과 같습니다.  
+
+![](images/2026-03-02-13-53-42.png)
+*🔼 선택한 id와 일치하는 원소를 찾아서 제목과 본문으로 설정*  
+저장하고 나서 목록을 클릭해보면 아무런 일이 발생하지 않는걸 알 수 있습니다. 디버깅을 한 번 해보겠습니다. 반복문 안에서 console.log를 이용해 topics[i]의 id 값과 id state의 값을 출력해보겠습니다.  
+
+![](images/2026-03-02-13-56-24.png). 
+*🔼 topics[i]의 id 값과 id state 값 출력*  
+개발자 도구의 콘솔을 열고 내비게이션 목록을 클릭해보면 topics[i]의 id 값은 1, 2, 3으로 숫자인데, id state의 값은 문자 2인것을 알 수 있습니다.  
+
+![](images/2026-03-02-13-59-17.png)  
+*🔼 topics[i]의 id 값과 id state 값 출력*  
+그리고 id 값이 만들어지는 방법을 살펴보겠습니다. 이 id 값은 setId로부터 왔습니다.
+```
+setId(_id);
+```
+그리고 setId는 &lt;Nav&gt; 컴포넌트의 onChagneMode에서 사용됐습니다. 그리고 onChangeMode에 있는 _id값은 Nav 함수로부터 왔습니다.
+```
+<Nav topics={topics} onChangeMode={(_id)=>{
+    setMode('READ');
+    setId(_id);
+}}></Nav>
+```
+Nav 함수의 내부를 살펴보겠습니다. Nav 함수에서 id 값을 알아낼 때 event.target.id를 통해 id 값을 알아내는데, id 값은 &lt;a&gt; 태그 안에 있습니다. 우리가 입력했을 때의 값은 숫자였지만, 이를 태그의 속성으로 넘기면 문자가 도비니다. 그래서 evnet.target.id에 있는 문자열 id가 되는 것입니다.
+```
+<a id+{t.id} href={'/read/'+t.id} onClick={event=>{
+    event.preventDefault();
+    props.onChangeMode(event.target.id);
+}}>{t.title}</a>
+```
+따라서 문자를 숫자로 형변환하면 되겠죠? 자바스크립트에서 문자를 숫자로 형변환해주는 Number() 함수를 이용해 형변환을 하겠습니다.  
+
+![](images/2026-03-02-14-06-39.png). 
+*🔼 Number 함수를 이용해 형변환*  
+그리고 다시 목록을 클릭해보면 id 값이 이제 숫자로 출력되는 모습을 볼 수 있고, 선택한 글에 해당하는 제목과 본문이 잘 출력되는 모습을 볼 수 있습니다.  
+
+![](images/2026-03-02-14-08-16.png)  
+*🔼 선택한 글에 해당하는 제목과 본문이 출력되는 모습*  
+이렇게 해서 컴포넌트 함수를 다시 실행하는 두 가지 데이터인 prop과 state에 대해서 살펴봤습니다.
