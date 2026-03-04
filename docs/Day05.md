@@ -106,6 +106,29 @@ mode가 READ일 때의 코드를 복사한 다음 Update 컴포넌트가 시작�
 *🔼 title과 body state 만들고 props를 state로 전환*  
 그리고 다시 한번 폼에 있는 값을 바꿔볼까요? 아직은 값이 바뀌지 않습니다. 폼에 값을 입력하더라도 폼에 연결된 state가 바뀌지 않기 때문입니다. 어떻게 해야 할까요? 조금 어렵다고 느껴질 수 있는데, &lt;input&gt; 태그에 onChange 이벤트를 추가합니다. onChange 이벤트는 HTML의 onChange와는 다르게 동작합니다. HTML의 onChange는 값이 바뀌거나 마우스 포인터가 바깥쪽으로 빠져나갈 때 호출되는데, 리액트에서는 값을 입력할 때마다 값이 호출됩니다. 다음과 같이 onChange 이벤트에 event를 출력하는 로그를 추가해보겠습니다. 우리가 필요한건 값을 입력했을 때 입력한값이 무엇인지가 필요합니다. 이벤트 함수 안에서 트리거한 태그를 찾는건 target이고, 그 target의 값은 value이므로 다음과 같이 입력하고 실행해보겠습니다.  
 
-![](images/2026-03-03-15-03-55.png). 
-*🔼 onChange 이벤트를 추가하고 로그 출력*. 
-Update 페이지의 폼에서 글자를 입력해보면 콘솔에 다음과 같이 입력한 마지막 값이 출력되는 모습을 볼 수 있습니다.
+![](images/2026-03-03-15-03-55.png).  
+*🔼 onChange 이벤트를 추가하고 로그 출력*.  
+Update 페이지의 폼에서 글자를 입력해보면 콘솔에 다음과 같이 입력한 마지막 값이 출력되는 모습을 볼 수 있습니다.  
+
+![](images/2026-03-04-16-13-34.png)  
+*🔼 폼에 입력한 글자 중 마지막 글자를 로그로 출력*  
+이제 우리가 해야 할 일은 event.target.value로 획득한 값을 새로운 state로 바꿔줘야 합니다. setTitle을 이용해 우리가 알아낸 가장 최근에 변경된 값을 새로운 title값으로 바꿔줍니다.  
+
+![](images/2026-03-04-16-16-18.png)  
+*🔼 setTitle을 이용해 변경된 값을 새로운 title로 설정*  
+다시 실행해보면 입력한 값이 잘 출력되는 모습을 볼 수 있습니다.
+다시 정리해보면 먼저 props로 들어온 title을 state로 변경했습니다.
+```
+const [title, setTitle] = useState(props.title);
+```
+그리고 그 state를 &lt;input&gt; 태그의 value 값으로 지정했습니다.
+```
+<p><input type="text" name="title" placeholder="title" value={title} /></p>
+```
+state는 컴포넌트 안에서 변경할 수 있으므로 onChange에서 키보드를 입력할 때마다 setTitle을 이용해 새로운 값으로 지정했습니다. 그러면 새로운 값을 입력할 때마다 title의 값이 바뀌고 컴포넌트가 다시 렌더링 되면서 새로운 값이 value로 들어오는 과정이 반복되는 것입니다.
+```
+<p><input type="text" name="title" placehoder="title" value={title} onChange={event=>{
+    setTitle(event.target.value);
+}}/></p>
+```
+이번에는 본문 내용도 값을 입력하면 바뀌도록 수정해보겠습니다. &lt;textarea&gt; 태그에 onChange 이벤트를 추가하고 setBody를 이용해 body 값을 변경합니다.
