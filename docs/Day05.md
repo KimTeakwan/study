@@ -131,4 +131,50 @@ state는 컴포넌트 안에서 변경할 수 있으므로 onChange에서 키보
     setTitle(event.target.value);
 }}/></p>
 ```
-이번에는 본문 내용도 값을 입력하면 바뀌도록 수정해보겠습니다. &lt;textarea&gt; 태그에 onChange 이벤트를 추가하고 setBody를 이용해 body 값을 변경합니다.
+이번에는 본문 내용도 값을 입력하면 바뀌도록 수정해보겠습니다. &lt;textarea&gt; 태그에 onChange 이벤트를 추가하고 setBody를 이용해 body 값을 변경합니다.  
+
+![](images/2026-03-09-14-31-40.png)  
+*🔼 setBody를 이용해 변경된 값을 새로운 body로 설정*  
+이제 업데이트 페이지에서 제목과 본문 폼을 바꿔보면 잘 바뀌는 모습을 볼 수 있습니다. Update 버튼을 클릭하면 onSubmit이 호출되면서 title과 body 값을 onUpdate로 전달할 것입니다. 즉 아래 함수의 title과 body로 수정된 값이 잘 들어오면 됩니다.
+```
+<Update title={title} body={body} onUpdate={(title, body)=>{}}></Update>
+```
+console.log를 이용해 title과 body 값을 출력해보겠습니다.
+
+![](images/2026-03-09-14-37-59.png)  
+*🔼 title과 body를 로그로 출력*  
+수정 페이지에서 제목과 본문을 수정한 다음 Update버튼을 눌러보면 콘솔에 새로운 제목, 본문이 잘 출력되는 모습을 볼 수 있습니다.
+
+![](images/2026-03-09-14-36-55.png)  
+*🔼 새로운 제목과 본문을 로그로 출력*  
+이제 해야 할 일은 새로 변경된 제목과 본문 값으로 topics를 바꾸면 될 것입니다. 그래서 updateTopic 이라는 수정된 글을 만들겠습니다. 이때 title은 title이고, body는 body죠. 그리고 Update는 Read가 된 상태에서만 Update가 실행되기 때문에 READ를 하면 자연스럽게 id가 설정돼 있을 것입니다. 따라서 id는 id state를 사용하면 됩니다. 이렇게 해서 수정할 글을 만들었습니다.
+```
+const updateTopic= {id:id, title:title, body:body}
+```
+또 하나 해야 할 일은 우리가 바꾸려는 글인 topics는 데이터이가 배열이라는 객체입니다. 그래서 그냥 수정하면 안 되고 [...topics]와 같은 형태로 복제해야 합니다.
+```
+const newTopics = [...topics];
+```
+그러고 나서 기존의 topics에서 id가 일치하는 글을 찾아야 합니다. 따라서 for 문을 이용해 i가 0일 때부터 updateTopics의 길이만큼 반복해줍니다. 그리고 newTopics의 id와 현재 id가 같다면 선택한 토픽이므로, 지금 선택한 topic을 updateTopic으로 교체합니다. 그러고 나서 그 뒤는 볼필요가 없으므로 break문으로 반복문을 빠져나옵니다.
+```
+for(let i=0; i<newTopics.length; i++) {
+    if(newTopics[i].id == id) {
+        newTopics[i] = updatedTopics;
+        break;
+    }
+}
+```
+마지막으로 setTopics를 이용해 newTopics를 저장합니다.
+```
+setTopics(newTopics);
+```
+지금까지의 코드를 정리하면 다음과 같습니다.  
+
+![](images/2026-03-09-14-47-56.png)  
+*🔼 글 수정 구현*  
+Javascript 글을 선택하고 Update 링크를 클릭해 업데이트 페이지로 이동합니다. 그리고 제목과 내용을 수정하고 Update 버튼을 클릭하면 다음과 같이 제목과 내용이 바뀌는 모습을 볼 수 있습니다.  
+
+![](images/2026-03-09-14-49-31.png)  
+*🔼 글 수정 완료*  
+글 수정을 마쳤으면 상세보기 페이지로 이동해야 합니다. setMode를 이용해 mode를 READ로 바꿔줍니다. 그리고 id는 이미 세팅돼 있으므로 setId는 할 필요가 없습니다. 그리고 글을 새로 생성한 것이 아니므로 setNextId도 할 필요가 없습니다.
+이렇게 해서 CRUD 중에서 가능 난이도가 높은 Update 기능을 구현했습니다. Update 기능에서 주의할 점은 수정일 때에는 기존값을 value 값으로 주입하려면 props에서 state로 바꿔야 하고, 값이 바뀔 때마다 바뀐 값을 state로 바꿔서 그 값을 다시 피드백 받아야 한다는 것입니다.
